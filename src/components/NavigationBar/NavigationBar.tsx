@@ -22,10 +22,12 @@ function NavigationBar() {
             <NavigationButton
               name="로그아웃"
               onClick={() => {
-                localStorage.clear();
-                alert("로그아웃 되었습니다.");
-                router.push("/");
-                window.location.reload();
+                if (typeof window !== "undefined") {
+                  window.localStorage.clear();
+                  alert("로그아웃 되었습니다.");
+                  router.push("/");
+                  window.location.reload();
+                }
               }}
             />
           </div>

@@ -3,16 +3,20 @@ import { gcs } from "./types";
 
 export default function useTokens(): { setTokens: Function; tokens: gcs.TokensInterface; isLoggedIn: boolean } {
   const getTokens = (): gcs.TokensInterface => {
-    const tokensString = localStorage.getItem("tokens");
+    if (typeof window !== "undefined") {
+      const tokensString = window.localStorage.getItem("tokens");
 
-    const ret = { userId: "", access_token: "" };
-    if (tokensString) {
-      const userTokens = JSON.parse(tokensString);
-      ret.userId = userTokens.userId;
-      ret.access_token = userTokens.access_token;
+      const ret = { userId: "", access_token: "" };
+      if (tokensString) {
+        const userTokens = JSON.parse(tokensString);
+        ret.userId = userTokens.userId;
+        ret.access_token = userTokens.access_token;
+      }
+
+      return ret;
+    } else {
+      return null;
     }
-
-    return ret;
   };
 
   const [tokens, setTokens] = useState(getTokens());
@@ -22,8 +26,8 @@ export default function useTokens(): { setTokens: Function; tokens: gcs.TokensIn
   })();
 
   function saveTokens(tokens: gcs.TokensInterface) {
-    if (tokens) {
-      localStorage.setItem("tokens", JSON.stringify(tokens));
+    if (typeof window !== "undefined" && tokens) {
+      window.localStorage.setItem("tokens", JSON.stringify(tokens));
       setTokens(tokens);
     }
   }

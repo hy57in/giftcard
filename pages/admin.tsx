@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { getUser } from "../../services/UserService";
-import useTokens from "../../utils/useTokens";
-import GiftcardAdmin from "../Giftcard/GiftcardAdmin";
-import StoreAdmin from "../Store/StoreAdmin";
-import StoreCreate from "../Store/StoreCreate";
+import { getUser } from "../src/services/UserService";
+import useTokens from "../src/utils/useTokens";
+import GiftcardAdmin from "../src/components/Giftcard/GiftcardAdmin";
+import StoreAdmin from "../src/components/Store/StoreAdmin";
+import StoreCreate from "../src/components/Store/StoreCreate";
 
 function Admin() {
   const { tokens } = useTokens();

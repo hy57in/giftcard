@@ -1,34 +1,22 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { makeGiftcardPurchase } from "../../services/GiftcardPurchaseService";
-import { getGiftcard } from "../../services/GiftcardService";
-import { gcs } from "../../utils/types";
-import useTokens from "../../utils/useTokens";
+import { makeGiftcardPurchase } from "../src/services/GiftcardPurchaseService";
+import { getGiftcard } from "../src/services/GiftcardService";
+import { gcs } from "../src/utils/types";
+import useTokens from "../src/utils/useTokens";
 
-function QrRead({
-  location,
-}: {
-  location: {
-    state: {
-      data: {
-        qrCodeId: string;
-        user: { id: string; username: string };
-        storeId: string;
-        giftcardId: string;
-        amount: number;
-      };
-    };
-  };
-}) {
+function QrRead() {
+  const { isLoggedIn } = useTokens();
   const router = useRouter();
   const { tokens } = useTokens();
   const [qrData] = useState({
-    qrCodeId: location.state.data?.qrCodeId,
-    user: { id: location.state.data?.user.id, username: location.state.data?.user.username },
-    storeId: location.state.data?.storeId,
-    giftcardId: location.state.data?.giftcardId,
-    amount: location.state.data?.amount,
+    qrCodeId: router.query.qrCodeId as string,
+    userId: router.query.userId as string,
+    username: router.query.username as string,
+    storeId: router.query.storeId as string,
+    giftcardId: router.query.giftcardId as string,
+    amount: parseInt(router.query.amount as string),
   });
 
   const [giftcard, setGiftcard] = useState<gcs.GiftcardResponseInterface | null>(null);
@@ -40,6 +28,10 @@ function QrRead({
   const [purchaseState, setPurchaseState] = useState<PurchaseStateEnum>(PurchaseStateEnum.TRYING);
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+
     (async () => {
       const tempGiftcard = await getGiftcard({ tokens, giftcardId: qrData.giftcardId }).then(async (res) => {
         setGiftcard(res);
@@ -56,7 +48,7 @@ function QrRead({
         await makeGiftcardPurchase({
           tokens,
           data: {
-            userId: qrData.user.id,
+            userId: qrData.userId,
             storeId: qrData.storeId,
             giftcardId: qrData.giftcardId,
             qrCodeId: qrData.qrCodeId,
@@ -108,7 +100,7 @@ function QrRead({
           <div className="w-full h-px bg-gray-500 mb-2" />
           <div className="flex flex-row w-full items-center mb-2">
             <div className="w-full font-bold mr-1">사용자 아이디:</div>
-            <div className="w-full text-right">{qrData?.user.username}</div>
+            <div className="w-full text-right">{qrData?.username}</div>
           </div>
           <div className="w-full h-px bg-gray-500 mb-2" />
           <div className="flex flex-row w-full items-center mb-2">

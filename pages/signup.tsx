@@ -1,14 +1,15 @@
-import { withRouter } from "react-router-dom";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-import { registerUser } from "../../services/UserService";
+import { registerUser } from "../src/services/UserService";
 
-function Signup({ history }: { history: any }) {
+function Signup() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
 
   const onSubmit = async (data: { username: string; password: string; password2: string }) => {
     const { username, password, password2 } = data;
@@ -19,7 +20,7 @@ function Signup({ history }: { history: any }) {
       await registerUser({ username, password })
         .then((res) => {
           alert("회원가입에 성공했습니다!");
-          history.push("/");
+          router.push("/");
           window.location.reload();
           return res;
         })
@@ -95,7 +96,7 @@ function Signup({ history }: { history: any }) {
               className="rounded-md bg-gray-600 text-white font-bold p-2"
               onClick={(e) => {
                 e.preventDefault();
-                history.push("/login");
+                router.push("/login");
               }}
             >
               로그인
@@ -107,4 +108,4 @@ function Signup({ history }: { history: any }) {
   );
 }
 
-export default withRouter(Signup);
+export default Signup;

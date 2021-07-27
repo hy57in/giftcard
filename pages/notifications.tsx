@@ -1,14 +1,16 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useRouter } from "next/router";
 
-import { findGiftcardList } from "../../services/GiftcardService";
-import { getUser } from "../../services/UserService";
-import useTokens from "../../utils/useTokens";
-import GiftcardItem from "../Giftcard/GiftcardItem";
+import { findGiftcardList } from "../src/services/GiftcardService";
+import { getUser } from "../src/services/UserService";
+import useTokens from "../src/utils/useTokens";
+import GiftcardItem from "../src/components/Giftcard/GiftcardItem";
 
 function GiftcardNotificationList() {
-  const { tokens } = useTokens();
+  const { isLoggedIn, tokens } = useTokens();
+  const router = useRouter();
   const [user, setUser] = useState<{ id: string }>({ id: "" });
   const [expStartDays, setExpStartDays] = useState(1);
   const [giftcardList, setGiftcardList] = useState({
@@ -31,36 +33,38 @@ function GiftcardNotificationList() {
   const onChangeDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => setExpStartDays(parseInt(e.target.value));
 
   useEffect(() => {
-    (async () => {
-      (async () => {
-        const tempUser = await getUser({ tokens }).then((res) => {
-          setUser(res);
-          return res;
-        });
+    if (!isLoggedIn) {
+      router.push("/");
+    }
 
-        if (expStartDays < 0) {
-          await findGiftcardList({
-            tokens,
-            query: {
-              userId: tempUser.id,
-              expirationEnd: moment(Date.now()).toISOString(),
-            },
-          }).then((res) => {
-            setGiftcardList(res);
-          });
-        } else {
-          await findGiftcardList({
-            tokens,
-            query: {
-              userId: tempUser.id,
-              expirationStart: moment(Date.now()).toISOString(),
-              expirationEnd: moment(Date.now() + expStartDays * 24 * 3600 * 1000).toISOString(),
-            },
-          }).then((res) => {
-            setGiftcardList(res);
-          });
-        }
-      })();
+    (async () => {
+      const tempUser = await getUser({ tokens }).then((res) => {
+        setUser(res);
+        return res;
+      });
+
+      if (expStartDays < 0) {
+        await findGiftcardList({
+          tokens,
+          query: {
+            userId: tempUser?.id,
+            expirationEnd: moment(Date.now()).toISOString(),
+          },
+        }).then((res) => {
+          setGiftcardList(res);
+        });
+      } else {
+        await findGiftcardList({
+          tokens,
+          query: {
+            userId: tempUser?.id,
+            expirationStart: moment(Date.now()).toISOString(),
+            expirationEnd: moment(Date.now() + expStartDays * 24 * 3600 * 1000).toISOString(),
+          },
+        }).then((res) => {
+          setGiftcardList(res);
+        });
+      }
     })();
   }, [tokens, expStartDays]);
 
@@ -87,10 +91,7 @@ function GiftcardNotificationList() {
 
       <div className="flex flex-col w-full md:w-1/3">
         {giftcardList.items.map((giftcard) => (
-          <GiftcardItem
-            // key={giftcard.id}
-            giftcard={giftcard}
-          />
+          <GiftcardItem key={giftcard.id} giftcard={giftcard} />
         ))}
       </div>
       <ReactPaginate

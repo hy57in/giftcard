@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 
@@ -6,10 +7,11 @@ import { getUser } from "../../services/UserService";
 import useTokens from "../../utils/useTokens";
 import GiftcardPurchaseItem from "./GiftcardPurchaseItem";
 
-function GiftcardPurchaseList({ location }: { location: { search: string } }) {
+function GiftcardPurchaseList() {
   const { tokens } = useTokens();
+  const router = useRouter();
   const [user, setUser] = useState<{ id: string }>({ id: "" });
-  const [giftcardId, setGiftcardId] = useState(new URLSearchParams(location.search).get("giftcard-id") || undefined);
+  const { giftcardId } = router.query;
   const [giftcardPurchaseList, setGiftcardPurchaseList] = useState({
     items: [] as any[],
     links: {},
@@ -48,7 +50,9 @@ function GiftcardPurchaseList({ location }: { location: { search: string } }) {
   return (
     <div className="flex flex-col w-full items-center mx-auto p-4">
       <h1 className="pb-1 text-xl font-bold mb-2">{`내 상품권 이용 내역: 총 ${giftcardPurchaseList.meta.totalItems}개`}</h1>
-      {giftcardId && <h1 className="pb-1 text-lg font-bold mb-2 text-gray-500 text-center">{`(상품권 ID 조회: ${giftcardId})`}</h1>}
+      {giftcardId && (
+        <h1 className="pb-1 text-lg font-bold mb-2 text-gray-500 text-center">{`(상품권 ID 조회: ${giftcardId})`}</h1>
+      )}
       <div className="flex flex-col w-full md:w-1/3">
         {giftcardPurchaseList.items.map((giftcardPurchase) => (
           <GiftcardPurchaseItem key={giftcardPurchase.id} giftcardPurchase={giftcardPurchase} />

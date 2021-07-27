@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-import { API_V1_URL } from "../../utils/constants";
-import useTokens from "../../utils/useTokens";
-import { jsonAuthHeaders } from "../../services/headers";
-import { getUser } from "../../services/UserService";
+import { API_V1_URL } from "../src/utils/constants";
+import useTokens from "../src/utils/useTokens";
+import { jsonAuthHeaders } from "../src/services/headers";
+import { getUser } from "../src/services/UserService";
 
 function Profile() {
   const { tokens } = useTokens();
@@ -27,9 +27,11 @@ function Profile() {
       })
       .then(() => {
         alert("정보 수정에 성공했습니다! 반영을 위해 다시 로그인해주세요.");
-        localStorage.clear();
-        router.push("/");
-        window.location.reload();
+        if (typeof window !== "undefined") {
+          window.localStorage.clear();
+          router.push("/");
+          window.location.reload();
+        }
       })
       .catch((err) => {
         console.error(err.response.data);
@@ -45,9 +47,14 @@ function Profile() {
 
   useEffect(() => {
     (async () => {
-      const user = await getUser({ tokens });
-      setUser(user);
-      setValue("username", user.username, { shouldValidate: true });
+      await getUser({ tokens })
+        .then((user) => {
+          setUser(user);
+          setValue("username", user.username, { shouldValidate: true });
+        })
+        .catch(() => {
+          router.push("/");
+        });
     })();
   }, [tokens, setValue]);
 
@@ -141,10 +148,11 @@ function Profile() {
           <button
             className="rounded-md bg-gray-600 text-white font-bold p-2"
             onClick={() => {
-              localStorage.clear();
-              alert("로그아웃 되었습니다.");
-              router.push("/");
-              window.location.reload();
+              if (typeof window !== "undefined") {
+                window.localStorage.clear();
+                router.push("/");
+                alert("로그아웃 되었습니다.");
+              }
             }}
           >
             로그아웃

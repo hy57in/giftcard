@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useRouter } from "next/router";
 
 import { findGiftcardList } from "../../services/GiftcardService";
 import { getStore } from "../../services/StoreService";
@@ -8,10 +9,11 @@ import { gcs } from "../../utils/types";
 import useTokens from "../../utils/useTokens";
 import GiftcardItem from "./GiftcardItem";
 
-function GiftcardList({ location }: { location?: { search: string } }) {
+function GiftcardList() {
   const { tokens } = useTokens();
+  const router = useRouter();
   const [user, setUser] = useState<{ id: string }>({ id: "" });
-  const [storeId, setStoreId] = useState(new URLSearchParams(location?.search).get("store-id") || undefined);
+  const { storeId } = router.query;
   const [store, setStore] = useState<gcs.StoreFindOneResponseInterface>({});
   const [giftcardList, setGiftcardList] = useState({
     items: [] as any[],
@@ -96,10 +98,7 @@ function GiftcardList({ location }: { location?: { search: string } }) {
         <Fragment>
           <div className="flex flex-col w-full md:w-1/3">
             {giftcardList.items.map((giftcard) => (
-              <GiftcardItem
-                //  key={giftcard.id}
-                giftcard={giftcard}
-              />
+              <GiftcardItem key={giftcard.id} giftcard={giftcard} />
             ))}
           </div>
           <ReactPaginate

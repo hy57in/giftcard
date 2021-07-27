@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-import useTokens from "../../utils/useTokens";
-import { loginUser } from "../../services/UserService";
+import useTokens from "../src/utils/useTokens";
+import { loginUser } from "../src/services/UserService";
+import { useEffect } from "react";
 
 function Login() {
   const {
@@ -10,9 +11,8 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const router = useRouter();
-  const { setTokens } = useTokens();
+  const { setTokens, isLoggedIn } = useTokens();
 
   const onSubmit = async (data: { username: string; password: string }) => {
     const { username, password } = data;
@@ -23,9 +23,9 @@ function Login() {
       },
     })
       .then((res: any) => {
-        alert("로그인에 성공했습니다!");
-        router.push("/");
+        router.push("/giftcards");
         window.location.reload();
+        alert("로그인에 성공했습니다!");
         return res;
       })
       .catch(() => {
@@ -44,6 +44,12 @@ function Login() {
   const passwordValidation = {
     required: "비밀번호를 입력하세요.",
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <div className="max-w-screen-xl mx-auto w-full flex flex-col items-center p-4">

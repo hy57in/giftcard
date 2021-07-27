@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import QrReader from "react-qr-reader";
 import * as crypto from "crypto-js";
 
-import { CRYPTO_SECRET_KEY } from "../../utils/constants";
+import { CRYPTO_SECRET_KEY } from "../src/utils/constants";
+import useTokens from "../src/utils/useTokens";
 
 function QrScan() {
+  const { isLoggedIn } = useTokens();
   const router = useRouter();
   const [amount, setAmount] = useState(0);
   const onAmountChange = (e) => {
     setAmount(parseInt(e.target.value));
   };
+  const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
 
   const handleScan = (data: any) => {
     if (data) {
@@ -21,7 +24,7 @@ function QrScan() {
       const result = { ...decryptedData, amount };
       router.push({
         pathname: "/qr-read",
-        query: { data: result },
+        query: { ...result },
       });
     }
   };
@@ -29,6 +32,12 @@ function QrScan() {
   const handleError = (err: any) => {
     console.error(err);
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <div className="max-w-screen-xl mx-auto w-full flex flex-col items-center">
