@@ -2,10 +2,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 
-import { findGiftcardPurchaseList } from "../../services/GiftcardPurchaseService";
-import { getUser } from "../../services/UserService";
-import useTokens from "../../utils/useTokens";
-import GiftcardPurchaseItem from "./GiftcardPurchaseItem";
+import { findGiftcardPurchaseList } from "../src/services/GiftcardPurchaseService";
+import { getUser } from "../src/services/UserService";
+import useTokens from "../src/utils/useTokens";
+import GiftcardPurchaseItem from "../src/components/GiftcardPurchase/GiftcardPurchaseItem";
 
 function GiftcardPurchaseList() {
   const { tokens } = useTokens();

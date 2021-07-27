@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-import { getGiftcard, updateGiftcard } from "../../services/GiftcardService";
-import { findUserList, getUser } from "../../services/UserService";
-import { gcs } from "../../utils/types";
-import useTokens from "../../utils/useTokens";
+import { getGiftcard, updateGiftcard } from "../src/services/GiftcardService";
+import { findUserList, getUser } from "../src/services/UserService";
+import { gcs } from "../src/utils/types";
+import useTokens from "../src/utils/useTokens";
 
-function GiftcardGive({ location }: { location: { search: string } }) {
+function GiftcardGive() {
   const { tokens } = useTokens();
   const router = useRouter();
   const [user, setUser] = useState<gcs.UserProfileInterface | null>(null);
-  const [giftcardId, setGiftcardId] = useState(new URLSearchParams(location.search).get("giftcard-id") || "");
+  const { giftcardId } = router.query;
   const [giftcard, setGiftcard] = useState<gcs.GiftcardResponseInterface | null>(null);
 
   const {
@@ -39,7 +39,7 @@ function GiftcardGive({ location }: { location: { search: string } }) {
     }
 
     if (window.confirm("소유권을 정말로 이전하시겠습니까?") === true) {
-      await updateGiftcard({ tokens, giftcardId, data: { ownerId: userRet.items[0].id } })
+      await updateGiftcard({ tokens, giftcardId: giftcardId as string, data: { ownerId: userRet.items[0].id } })
         .then(() => {
           alert("소유권 이전에 성공했습니다!");
           router.push("/giftcards");
@@ -56,7 +56,7 @@ function GiftcardGive({ location }: { location: { search: string } }) {
     }
 
     (async () => {
-      await getGiftcard({ tokens, giftcardId }).then(async (res) => {
+      await getGiftcard({ tokens, giftcardId: giftcardId as string }).then(async (res) => {
         setGiftcard(res);
       });
 
