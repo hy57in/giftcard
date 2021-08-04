@@ -13,8 +13,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
+    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */
   },
-  "include": ["next-env.d.ts", "src/**/*.tsx"],
+  "include": ["next-env.d.ts", "src/**/*"],
   "exclude": ["node_modules"]
 }
