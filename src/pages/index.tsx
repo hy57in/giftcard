@@ -1,8 +1,8 @@
-import useTokens from "../src/utils/useTokens";
-import GiftcardList from "../src/components/Giftcard/GiftcardList";
+import useTokens from 'src/utils/useTokens'
+import GiftcardList from 'src/components/Giftcard/GiftcardList'
 
 export default function Index() {
-  const { isLoggedIn } = useTokens();
+  const { isLoggedIn } = useTokens()
 
   return (
     <div>
@@ -15,5 +15,5 @@ export default function Index() {
         )}
       </div>
     </div>
-  );
+  )
 }

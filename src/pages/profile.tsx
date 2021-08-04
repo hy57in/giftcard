@@ -1,24 +1,29 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
 
-import { API_V1_URL } from "../src/utils/constants";
-import useTokens from "../src/utils/useTokens";
-import { jsonAuthHeaders } from "../src/services/headers";
-import { getUser } from "../src/services/UserService";
+import { API_V1_URL } from '../utils/constants'
+import useTokens from '../utils/useTokens'
+import { jsonAuthHeaders } from '../services/headers'
+import { getUser } from '../services/UserService'
 
 function Profile() {
-  const { tokens } = useTokens();
-  const [user, setUser] = useState({ id: "", username: "", isManager: false, store: { id: "", name: "" } });
+  const { tokens } = useTokens()
+  const [user, setUser] = useState({
+    id: '',
+    username: '',
+    isManager: false,
+    store: { id: '', name: '' },
+  })
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm()
 
-  const router = useRouter();
+  const router = useRouter()
 
   async function updateUser({ username }: { username: string }) {
     return axios
@@ -26,43 +31,43 @@ function Profile() {
         headers: jsonAuthHeaders(tokens.access_token),
       })
       .then(() => {
-        alert("정보 수정에 성공했습니다! 반영을 위해 다시 로그인해주세요.");
-        if (typeof window !== "undefined") {
-          window.localStorage.clear();
-          router.push("/");
-          window.location.reload();
+        alert('정보 수정에 성공했습니다! 반영을 위해 다시 로그인해주세요.')
+        if (typeof window !== 'undefined') {
+          window.localStorage.clear()
+          router.push('/')
+          window.location.reload()
         }
       })
       .catch((err) => {
-        console.error(err.response.data);
-        alert("정보 수정에 실패했습니다.");
-      });
+        console.error(err.response.data)
+        alert('정보 수정에 실패했습니다.')
+      })
   }
 
   const onSubmit = async (data: { username: string }) => {
-    const { username } = data;
+    const { username } = data
 
-    await updateUser({ username });
-  };
+    await updateUser({ username })
+  }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await getUser({ tokens })
         .then((user) => {
-          setUser(user);
-          setValue("username", user.username, { shouldValidate: true });
+          setUser(user)
+          setValue('username', user.username, { shouldValidate: true })
         })
         .catch(() => {
-          router.push("/");
-        });
-    })();
-  }, [tokens, setValue]);
+          router.push('/')
+        })
+    })()
+  }, [tokens, setValue])
 
   const usernameValidation = {
-    required: "필수 필드입니다.",
-    minLength: { value: 5, message: "아이디는 5자 이상 20자 이하여야 합니다." },
-    maxLength: { value: 20, message: "아이디는 5자 이상 20자 이하여야 합니다." },
-  };
+    required: '필수 필드입니다.',
+    minLength: { value: 5, message: '아이디는 5자 이상 20자 이하여야 합니다.' },
+    maxLength: { value: 20, message: '아이디는 5자 이상 20자 이하여야 합니다.' },
+  }
 
   return (
     <div className="max-w-screen-xl mx-auto w-full flex flex-col items-center p-4">
@@ -77,28 +82,33 @@ function Profile() {
                   className="p-1 w-full rounded-md border-2 border-gray-500"
                   type="text"
                   placeholder="아이디"
-                  {...register("username", usernameValidation)}
+                  {...register('username', usernameValidation)}
                 />
               </div>
-              {errors.username && <div className="text-right text-red-600">{errors.username.message}</div>}
+              {errors.username && (
+                <div className="text-right text-red-600">{errors.username.message}</div>
+              )}
             </label>
 
             <div className="flex flex-row flex-shrink-0 items-center whitespace-nowrap mb-3">
               <p className="w-full font-bold">상태</p>
               <div className="p-1 w-full rounded-md border-0 border-gray-500">
-                {user.isManager ? "관리자" : "사용자"}
+                {user.isManager ? '관리자' : '사용자'}
               </div>
             </div>
 
             <div className="flex flex-row flex-shrink-0 items-center whitespace-nowrap mb-3">
               <p className="w-full font-bold">소속 매장</p>
               <div className="p-1 w-full rounded-md border-0 border-gray-500">
-                {user.store ? user.store.name : "없음"}
+                {user.store ? user.store.name : '없음'}
               </div>
             </div>
 
             <div className="flex flex-col justify-center items-center">
-              <button className="rounded-md bg-gray-600 text-white font-bold p-2 mb-2" type="submit">
+              <button
+                className="rounded-md bg-gray-600 text-white font-bold p-2 mb-2"
+                type="submit"
+              >
                 수정하기
               </button>
             </div>
@@ -114,7 +124,7 @@ function Profile() {
             <button
               className="rounded-md bg-gray-600 text-white font-bold p-2"
               onClick={() => {
-                router.push("/admin");
+                router.push('/admin')
               }}
             >
               관리자 페이지
@@ -126,9 +136,9 @@ function Profile() {
               className="rounded-md bg-gray-600 text-white font-bold p-2"
               onClick={() => {
                 router.push({
-                  pathname: "/giftcards",
-                  search: "?" + new URLSearchParams({ "store-id": user.store.id }).toString(),
-                });
+                  pathname: '/giftcards',
+                  search: '?' + new URLSearchParams({ 'store-id': user.store.id }).toString(),
+                })
               }}
             >
               매장 상품권 관리
@@ -139,7 +149,7 @@ function Profile() {
           <button
             className="rounded-md bg-gray-600 text-white font-bold p-2"
             onClick={() => {
-              router.push("/giftcard-purchases");
+              router.push('/giftcard-purchases')
             }}
           >
             상품권 이용 내역
@@ -148,10 +158,10 @@ function Profile() {
           <button
             className="rounded-md bg-gray-600 text-white font-bold p-2"
             onClick={() => {
-              if (typeof window !== "undefined") {
-                window.localStorage.clear();
-                router.push("/");
-                alert("로그아웃 되었습니다.");
+              if (typeof window !== 'undefined') {
+                window.localStorage.clear()
+                router.push('/')
+                alert('로그아웃 되었습니다.')
               }
             }}
           >
@@ -160,7 +170,7 @@ function Profile() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Profile;
+export default Profile

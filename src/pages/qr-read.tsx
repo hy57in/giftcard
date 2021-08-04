@@ -1,45 +1,47 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
-import { makeGiftcardPurchase } from "../src/services/GiftcardPurchaseService";
-import { getGiftcard } from "../src/services/GiftcardService";
-import { gcs } from "../src/utils/types";
-import useTokens from "../src/utils/useTokens";
+import { makeGiftcardPurchase } from '../services/GiftcardPurchaseService'
+import { getGiftcard } from '../services/GiftcardService'
+import { gcs } from '../utils/types'
+import useTokens from '../utils/useTokens'
 
 function QrRead() {
-  const { isLoggedIn } = useTokens();
-  const router = useRouter();
-  const { tokens } = useTokens();
-  const { qrCodeId, userId, username, storeId, giftcardId, amount } = router.query;
+  const { isLoggedIn } = useTokens()
+  const router = useRouter()
+  const { tokens } = useTokens()
+  const { qrCodeId, userId, username, storeId, giftcardId, amount } = router.query
 
-  const [giftcard, setGiftcard] = useState<gcs.GiftcardResponseInterface | null>(null);
+  const [giftcard, setGiftcard] = useState<gcs.GiftcardResponseInterface | null>(null)
   enum PurchaseStateEnum {
     SUCCESS,
     FAIL,
     TRYING,
   }
-  const [purchaseState, setPurchaseState] = useState<PurchaseStateEnum>(PurchaseStateEnum.TRYING);
+  const [purchaseState, setPurchaseState] = useState<PurchaseStateEnum>(PurchaseStateEnum.TRYING)
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push("/");
+      router.push('/')
     }
 
-    (async () => {
-      const tempGiftcard = await getGiftcard({ tokens, giftcardId: giftcardId as string }).then(async (res) => {
-        setGiftcard(res);
-        return res;
-      });
+    ;(async () => {
+      const tempGiftcard = await getGiftcard({ tokens, giftcardId: giftcardId as string }).then(
+        async (res) => {
+          setGiftcard(res)
+          return res
+        }
+      )
 
-      const tempAmount = parseInt(amount as string);
+      const tempAmount = parseInt(amount as string)
       if (tempAmount <= 0 || tempGiftcard.amountLeft < tempAmount) {
-        alert("올바른 금액을 입력하세요.");
-        router.push("/qr");
-        return;
+        alert('올바른 금액을 입력하세요.')
+        router.push('/qr')
+        return
       }
 
       if (purchaseState === PurchaseStateEnum.TRYING) {
-        console.log(userId);
+        console.log(userId)
         await makeGiftcardPurchase({
           tokens,
           data: {
@@ -51,28 +53,27 @@ function QrRead() {
           },
         })
           .then(() => {
-            setPurchaseState(PurchaseStateEnum.SUCCESS);
+            setPurchaseState(PurchaseStateEnum.SUCCESS)
           })
           .catch((err) => {
-            console.error(err.response.data);
-            if (err.response.data.message.includes("Giftcard given has been expired")) {
-              alert("상품권이 만료되었습니다.");
+            console.error(err.response.data)
+            if (err.response.data.message.includes('Giftcard given has been expired')) {
+              alert('상품권이 만료되었습니다.')
             } else {
-              alert("QR 정보가 올바르지 않거나 만료되었습니다.");
+              alert('QR 정보가 올바르지 않거나 만료되었습니다.')
             }
-            router.push("/qr");
-            return;
-          });
+            router.push('/qr')
+          })
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   return (
     <div className="max-w-screen-xl mx-auto w-full flex flex-col items-center p-4">
       <h1 className="pb-5 text-xl font-bold">
-        {qrCodeId && purchaseState === PurchaseStateEnum.SUCCESS && "QR 정보 결제 성공"}
-        {purchaseState === PurchaseStateEnum.FAIL && "QR 정보 읽는 데 실패"}
-        {purchaseState === PurchaseStateEnum.TRYING && "QR 정보 조회 완료"}
+        {qrCodeId && purchaseState === PurchaseStateEnum.SUCCESS && 'QR 정보 결제 성공'}
+        {purchaseState === PurchaseStateEnum.FAIL && 'QR 정보 읽는 데 실패'}
+        {purchaseState === PurchaseStateEnum.TRYING && 'QR 정보 조회 완료'}
       </h1>
 
       {qrCodeId && giftcard && purchaseState === PurchaseStateEnum.SUCCESS && (
@@ -85,7 +86,9 @@ function QrRead() {
           </div>
           <div className="flex flex-row w-full items-center mb-2">
             <div className="w-full font-bold mr-1">만료일:</div>
-            <div className="w-full text-right truncate">{new Date(giftcard?.expirationTime).toDateString()}</div>
+            <div className="w-full text-right truncate">
+              {new Date(giftcard?.expirationTime).toDateString()}
+            </div>
           </div>
           <div className="w-full h-px bg-gray-500 mb-2" />
           <div className="flex flex-row w-full items-center mb-2">
@@ -109,8 +112,8 @@ function QrRead() {
           <button
             className="rounded-md bg-gray-600 text-white font-bold p-2"
             onClick={(e) => {
-              e.preventDefault();
-              router.push("/");
+              e.preventDefault()
+              router.push('/')
             }}
           >
             메인 페이지로
@@ -118,7 +121,7 @@ function QrRead() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default QrRead;
+export default QrRead

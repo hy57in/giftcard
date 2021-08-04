@@ -1,21 +1,21 @@
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
 
-import useTokens from "../src/utils/useTokens";
-import { loginUser } from "../src/services/UserService";
-import { useEffect } from "react";
+import useTokens from '../utils/useTokens'
+import { loginUser } from '../services/UserService'
+import { useEffect } from 'react'
 
 function Login() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const router = useRouter();
-  const { setTokens, isLoggedIn } = useTokens();
+  } = useForm()
+  const router = useRouter()
+  const { setTokens, isLoggedIn } = useTokens()
 
   const onSubmit = async (data: { username: string; password: string }) => {
-    const { username, password } = data;
+    const { username, password } = data
     const tokens = await loginUser({
       credentials: {
         username: username,
@@ -23,33 +23,33 @@ function Login() {
       },
     })
       .then((res: any) => {
-        router.push("/giftcards");
-        window.location.reload();
-        alert("로그인에 성공했습니다!");
-        return res;
+        router.push('/giftcards')
+        window.location.reload()
+        alert('로그인에 성공했습니다!')
+        return res
       })
       .catch(() => {
-        alert("로그인 정보가 틀립니다!");
-        return null;
-      });
+        alert('로그인 정보가 틀립니다!')
+        return null
+      })
 
     if (setTokens) {
-      setTokens(tokens);
+      setTokens(tokens)
     }
-  };
+  }
 
   const usernameValidation = {
-    required: "아이디를 입력하세요.",
-  };
+    required: '아이디를 입력하세요.',
+  }
   const passwordValidation = {
-    required: "비밀번호를 입력하세요.",
-  };
+    required: '비밀번호를 입력하세요.',
+  }
 
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/");
+      router.push('/')
     }
-  }, []);
+  }, [])
 
   return (
     <div className="max-w-screen-xl mx-auto w-full flex flex-col items-center p-4">
@@ -63,10 +63,12 @@ function Login() {
                 className="p-1 rounded-md border-2 border-gray-500"
                 type="text"
                 placeholder="아이디"
-                {...register("username", usernameValidation)}
+                {...register('username', usernameValidation)}
               />
             </div>
-            {errors.username && <div className="text-right text-red-600">{errors.username.message}</div>}
+            {errors.username && (
+              <div className="text-right text-red-600">{errors.username.message}</div>
+            )}
           </label>
 
           <label className="flex flex-col flex-shrink-0 mb-3">
@@ -76,10 +78,12 @@ function Login() {
                 className="p-1 rounded-md border-2 border-gray-500"
                 type="password"
                 placeholder="비밀번호"
-                {...register("password", passwordValidation)}
+                {...register('password', passwordValidation)}
               />
             </div>
-            {errors.password && <div className="text-right text-red-600">{errors.password.message}</div>}
+            {errors.password && (
+              <div className="text-right text-red-600">{errors.password.message}</div>
+            )}
           </label>
 
           <div className="flex justify-center items-center">
@@ -89,8 +93,8 @@ function Login() {
             <button
               className="rounded-md bg-gray-600 text-white font-bold p-2"
               onClick={(e) => {
-                e.preventDefault();
-                router.push("/signup");
+                e.preventDefault()
+                router.push('/signup')
               }}
             >
               회원가입
@@ -99,7 +103,7 @@ function Login() {
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login
