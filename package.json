@@ -1,9 +1,24 @@
 {
-  "private": true,
+  "name": "giftcard",
+  "version": "1.0.0",
+  "description": "giftcard-frontend",
+  "repository": "https://github.com/teamsindy20/giftcard.git",
+  "author": "sindy",
+  "license": "GPL-3.0-only",
+  "private": false,
+  "engines": {
+    "node": ">=14.15.4"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier . --write --ignore-path .gitignore",
+    "lint": "eslint . --fix --ignore-path .gitignore",
+    "type": "tsc --pretty",
+    "test": "jest",
+    "pre-push": "yarn format && yarn lint && yarn type",
+    "prepare": "husky install"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -20,9 +35,34 @@
     "styled-components": "^5.3.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^11.2.7",
+    "@types/gtag.js": "^0.0.5",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.12.2",
     "@types/react": "^17.0.15",
+    "@types/react-dom": "^17.0.7",
+    "@types/react-infinite-scroller": "^1.2.1",
+    "@types/react-qr-reader": "^2.1.4",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "autoprefixer": "^10.3.1",
+    "babel-plugin-styled-components": "^1.12.0",
+    "eslint": "^7.28.0",
+    "eslint-config-next": "^11.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^6.0.0",
+    "jest": "^27.0.4",
     "postcss": "^8.3.6",
+    "prettier": "^2.3.1",
     "tailwindcss": "^2.2.7",
     "typescript": "^4.3.5"
   }
