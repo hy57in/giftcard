@@ -1,50 +1,50 @@
-import { Fragment, useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
-import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
+import { useRouter } from 'next/router'
 
-import { findGiftcardList } from "../../services/GiftcardService";
-import { getStore } from "../../services/StoreService";
-import { getUser } from "../../services/UserService";
-import { gcs } from "../../utils/types";
-import useTokens from "../../utils/useTokens";
-import GiftcardItem from "./GiftcardItem";
+import { findGiftcardList } from '../../services/GiftcardService'
+import { getStore } from '../../services/StoreService'
+import { getUser } from '../../services/UserService'
+import { gcs } from '../../utils/types'
+import useTokens from '../../utils/useTokens'
+import GiftcardItem from './GiftcardItem'
 
 function GiftcardList() {
-  const { tokens } = useTokens();
-  const router = useRouter();
-  const [user, setUser] = useState<{ id: string }>({ id: "" });
-  const { storeId } = router.query;
-  const [store, setStore] = useState<gcs.StoreFindOneResponseInterface>({});
+  const { tokens } = useTokens()
+  const router = useRouter()
+  const [user, setUser] = useState<{ id: string }>({ id: '' })
+  const storeId = (router.query.storeId ?? '') as string
+  const [store, setStore] = useState<gcs.StoreFindOneResponseInterface>({})
   const [giftcardList, setGiftcardList] = useState({
     items: [] as any[],
     links: {},
     meta: { totalItems: 0, totalPages: 0 },
-  });
+  })
 
   /** 페이지당 몇 개의 항목이 존재하는지 */
-  const PER_PAGE = 10;
+  const PER_PAGE = 10
 
   const handlePageClick = async (data: { selected: number }) => {
-    const page = data.selected + 1;
+    const page = data.selected + 1
 
     await findGiftcardList({ tokens, query: { page, limit: PER_PAGE } }).then((res) => {
-      setGiftcardList(res);
-    });
-  };
+      setGiftcardList(res)
+    })
+  }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const tempUser = await getUser({ tokens }).then((res) => {
-        setUser(res);
-        return res;
-      });
+        setUser(res)
+        return res
+      })
 
-      let tempStoreId = undefined;
+      let tempStoreId
       if (tempUser.store && storeId) {
-        tempStoreId = storeId;
+        tempStoreId = storeId
 
-        const store = await getStore({ tokens, storeId });
-        setStore(store);
+        const store = await getStore({ tokens, storeId })
+        setStore(store)
       }
 
       if (tempStoreId) {
@@ -52,24 +52,24 @@ function GiftcardList() {
           tokens,
           query: { page: 1, limit: PER_PAGE, storeId: tempStoreId },
         }).then((res) => {
-          setGiftcardList(res);
-        });
+          setGiftcardList(res)
+        })
       } else {
         await findGiftcardList({
           tokens,
           query: { page: 1, limit: PER_PAGE, userId: tempUser.id },
         }).then((res) => {
-          setGiftcardList(res);
-        });
+          setGiftcardList(res)
+        })
       }
-    })();
-  }, [tokens]);
+    })()
+  }, [tokens])
 
   return (
     <div className="flex flex-col w-full items-center mx-auto p-4">
-      <h1 className="pb-1 text-xl font-bold mb-2">{`${storeId ? `매장 "${store.name}" ` : ""}상품권: 총 ${
-        giftcardList.meta.totalItems
-      }개`}</h1>
+      <h1 className="pb-1 text-xl font-bold mb-2">{`${
+        storeId ? `매장 "${store.name}" ` : ''
+      }상품권: 총 ${giftcardList.meta.totalItems}개`}</h1>
       {store && store.id && (
         <div className="flex flex-col w-full md:w-1/3 items-center rounded-md border-2 p-2 border-gray-500 space-y-2 mb-2">
           <div className="text-xl font-bold">매장 상품권 통계</div>
@@ -102,10 +102,10 @@ function GiftcardList() {
             ))}
           </div>
           <ReactPaginate
-            previousLabel={"이전"}
-            nextLabel={"다음"}
-            breakLabel={"..."}
-            breakClassName={"break-me"}
+            previousLabel={'이전'}
+            nextLabel={'다음'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
             pageCount={giftcardList.meta.totalPages}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
@@ -119,7 +119,7 @@ function GiftcardList() {
         <Fragment></Fragment>
       )}
     </div>
-  );
+  )
 }
 
-export default GiftcardList;
+export default GiftcardList

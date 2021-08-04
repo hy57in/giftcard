@@ -1,34 +1,34 @@
-import { useState } from "react";
-import { gcs } from "./types";
+import { useState } from 'react'
+import { gcs } from './types'
 
-export default function useTokens(): { setTokens: Function; tokens: gcs.TokensInterface; isLoggedIn: boolean } {
+export default function useTokens() {
   const getTokens = (): gcs.TokensInterface => {
-    if (typeof window !== "undefined") {
-      const tokensString = window.localStorage.getItem("tokens");
+    if (typeof window !== 'undefined') {
+      const tokensString = window.localStorage.getItem('tokens')
 
-      const ret = { userId: "", access_token: "" };
+      const ret = { userId: '', access_token: '' }
       if (tokensString) {
-        const userTokens = JSON.parse(tokensString);
-        ret.userId = userTokens.userId;
-        ret.access_token = userTokens.access_token;
+        const userTokens = JSON.parse(tokensString)
+        ret.userId = userTokens.userId
+        ret.access_token = userTokens.access_token
       }
 
-      return ret;
+      return ret
     } else {
-      return null;
+      return null
     }
-  };
+  }
 
-  const [tokens, setTokens] = useState(getTokens());
+  const [tokens, setTokens] = useState(getTokens())
 
   const isLoggedIn = ((): boolean => {
-    return tokens && tokens.access_token ? true : false;
-  })();
+    return !!(tokens && tokens.access_token)
+  })()
 
   function saveTokens(tokens: gcs.TokensInterface) {
-    if (typeof window !== "undefined" && tokens) {
-      window.localStorage.setItem("tokens", JSON.stringify(tokens));
-      setTokens(tokens);
+    if (typeof window !== 'undefined' && tokens) {
+      window.localStorage.setItem('tokens', JSON.stringify(tokens))
+      setTokens(tokens)
     }
   }
 
@@ -36,5 +36,5 @@ export default function useTokens(): { setTokens: Function; tokens: gcs.TokensIn
     setTokens: saveTokens,
     tokens,
     isLoggedIn,
-  };
+  }
 }

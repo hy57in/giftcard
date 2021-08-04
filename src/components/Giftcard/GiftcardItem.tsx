@@ -1,19 +1,19 @@
-import moment from "moment";
-import { useRouter } from "next/router";
+import moment from 'moment'
+import { useRouter } from 'next/router'
 
 interface GiftcardItemPropsInterface {
   giftcard: {
-    id: string;
-    owner: { id: string; username: string } | null;
-    store: { id: string; name: string };
-    expirationTime: Date;
-    amount: number;
-    amountLeft: number;
-  };
+    id: string
+    owner: { id: string; username: string } | null
+    store: { id: string; name: string }
+    expirationTime: Date
+    amount: number
+    amountLeft: number
+  }
 }
 
 function GiftcardItem({ giftcard }: GiftcardItemPropsInterface) {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <div
@@ -37,14 +37,16 @@ function GiftcardItem({ giftcard }: GiftcardItemPropsInterface) {
       <div className="flex flex-row w-full items-center mb-1">
         <div className="w-2/3 font-bold mr-1">만료일:</div>
         <div className="w-full text-right truncate">
-          {moment(giftcard?.expirationTime).format("YYYY/MM/DD, HH:mm:ss")}
+          {moment(giftcard?.expirationTime).format('YYYY/MM/DD, HH:mm:ss')}
         </div>
       </div>
       <div className="flex flex-col w-full p-2 rounded-md border-2 border-gray-500">
         <div className="text-center font-bold">소유자 정보</div>
         <div className="flex flex-row w-full text-sm">
           <div className="w-1/3 font-bold mr-1">아이디:</div>
-          <div className="w-full text-right truncate">{giftcard.owner ? giftcard.owner?.username : "없음"}</div>
+          <div className="w-full text-right truncate">
+            {giftcard.owner ? giftcard.owner?.username : '없음'}
+          </div>
         </div>
         <div className="w-full h-px bg-gray-500 my-2" />
 
@@ -66,7 +68,9 @@ function GiftcardItem({ giftcard }: GiftcardItemPropsInterface) {
         </div>
         <div className="flex flex-row w-full items-center text-sm text-red-500">
           <div className="w-full font-bold mr-1">사용 금액:</div>
-          <div className="w-full text-right truncate">{giftcard?.amount - giftcard?.amountLeft}</div>
+          <div className="w-full text-right truncate">
+            {giftcard?.amount - giftcard?.amountLeft}
+          </div>
         </div>
         <div className="flex flex-row w-full items-center text-sm text-green-500">
           <div className="w-full font-bold mr-1">잔여 금액:</div>
@@ -74,7 +78,7 @@ function GiftcardItem({ giftcard }: GiftcardItemPropsInterface) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default GiftcardItem;
+export default GiftcardItem

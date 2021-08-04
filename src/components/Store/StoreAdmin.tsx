@@ -1,8 +1,8 @@
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form'
 
-import { findStoreList } from "../../services/StoreService";
-import { findUserList, updateUserStore } from "../../services/UserService";
-import useTokens from "../../utils/useTokens";
+import { findStoreList } from '../../services/StoreService'
+import { findUserList, updateUserStore } from '../../services/UserService'
+import useTokens from '../../utils/useTokens'
 
 function StoreAdmin() {
   const {
@@ -11,58 +11,68 @@ function StoreAdmin() {
     setError,
     getValues,
     formState: { errors },
-  } = useForm();
-  const { tokens } = useTokens();
+  } = useForm()
+  const { tokens } = useTokens()
 
-  const onSubmit = async (data: { username: string; storeName: string; selectUpdateOrRemoveStore: any }) => {
-    const { username, storeName, selectUpdateOrRemoveStore } = data;
+  const onSubmit = async (data: {
+    username: string
+    storeName: string
+    selectUpdateOrRemoveStore: any
+  }) => {
+    const { username, storeName, selectUpdateOrRemoveStore } = data
 
-    let existsCondition = { username: false, storeName: false };
+    const existsCondition = { username: false, storeName: false }
 
-    if (selectUpdateOrRemoveStore === "UPDATE") {
-      const userRet = await findUserList({ tokens, query: { username } });
-      const storeRet = await findStoreList({ tokens, query: { name: storeName } });
+    if (selectUpdateOrRemoveStore === 'UPDATE') {
+      const userRet = await findUserList({ tokens, query: { username } })
+      const storeRet = await findStoreList({ tokens, query: { name: storeName } })
 
-      existsCondition.username = userRet.items.length > 0;
-      existsCondition.storeName = storeRet.items.length > 0;
+      existsCondition.username = userRet.items.length > 0
+      existsCondition.storeName = storeRet.items.length > 0
 
       if (existsCondition.username && existsCondition.storeName) {
-        const user = userRet.items[0];
-        const store = storeRet.items[0];
+        const user = userRet.items[0]
+        const store = storeRet.items[0]
         await updateUserStore({ tokens, userId: user.id, data: { storeId: store.id } }).then(() => {
-          alert("성공적으로 해당 사용자의 매장 권한을 업데이트했습니다.");
-        });
+          alert('성공적으로 해당 사용자의 매장 권한을 업데이트했습니다.')
+        })
       }
     }
-    if (selectUpdateOrRemoveStore === "REMOVE") {
-      const userRet = await findUserList({ tokens, query: { username } });
+    if (selectUpdateOrRemoveStore === 'REMOVE') {
+      const userRet = await findUserList({ tokens, query: { username } })
 
-      existsCondition.username = userRet.items.length > 0;
+      existsCondition.username = userRet.items.length > 0
 
       if (existsCondition.username) {
-        const user = userRet.items[0];
+        const user = userRet.items[0]
         await updateUserStore({ tokens, userId: user.id, data: { storeId: null } }).then(() => {
-          alert("성공적으로 해당 사용자의 매장 권한을 업데이트했습니다.");
-        });
+          alert('성공적으로 해당 사용자의 매장 권한을 업데이트했습니다.')
+        })
       }
     }
 
     if (!existsCondition.username) {
-      setError("username", { type: "invalidUsername", message: `아이디 "${username}"은(는) 존재하지 않습니다.` });
+      setError('username', {
+        type: 'invalidUsername',
+        message: `아이디 "${username}"은(는) 존재하지 않습니다.`,
+      })
     }
     if (!existsCondition.storeName) {
-      setError("storeName", { type: "invalidStoreName", message: `매장 "${storeName}"은(는) 존재하지 않습니다.` });
+      setError('storeName', {
+        type: 'invalidStoreName',
+        message: `매장 "${storeName}"은(는) 존재하지 않습니다.`,
+      })
     }
-  };
+  }
 
   const validators = {
     usernameValidator: {
-      required: "권한을 부여할 사용자 아이디를 입력하세요.",
+      required: '권한을 부여할 사용자 아이디를 입력하세요.',
     },
     storeNameValidator: {
-      required: "매장 이름을 입력하세요.",
+      required: '매장 이름을 입력하세요.',
     },
-  };
+  }
 
   return (
     <div className="flex flex-col items-center p-5 rounded-md border-2 border-gray-500">
@@ -81,17 +91,17 @@ function StoreAdmin() {
                   type="radio"
                   value="UPDATE"
                   defaultChecked
-                  {...register("selectUpdateOrRemoveStore", { required: true })}
+                  {...register('selectUpdateOrRemoveStore', { required: true })}
                 />
                 부여하기
               </div>
               <div>
-                {" "}
+                {' '}
                 <input
                   className="mr-1"
                   type="radio"
                   value="REMOVE"
-                  {...register("selectUpdateOrRemoveStore", { required: true })}
+                  {...register('selectUpdateOrRemoveStore', { required: true })}
                 />
                 삭제하기
               </div>
@@ -106,13 +116,15 @@ function StoreAdmin() {
               className="p-1 w-full rounded-md border-2 border-gray-500"
               type="text"
               placeholder="사용자 아이디"
-              {...register("username", validators.usernameValidator)}
+              {...register('username', validators.usernameValidator)}
             />
           </div>
-          {errors.username && <div className="text-right text-red-600">{errors.username.message}</div>}
+          {errors.username && (
+            <div className="text-right text-red-600">{errors.username.message}</div>
+          )}
         </label>
 
-        {getValues("selectUpdateOrRemoveStore") === "UPDATE" && (
+        {getValues('selectUpdateOrRemoveStore') === 'UPDATE' && (
           <label className="flex flex-col flex-shrink-0 mb-3">
             <div className="flex flex-row items-center whitespace-nowrap">
               <p className="w-full font-bold">*매장 이름</p>
@@ -120,10 +132,12 @@ function StoreAdmin() {
                 className="p-1 w-full rounded-md border-2 border-gray-500"
                 type="text"
                 placeholder="매장 이름"
-                {...register("storeName", validators.storeNameValidator)}
+                {...register('storeName', validators.storeNameValidator)}
               />
             </div>
-            {errors.storeName && <div className="text-right text-red-600 truncate">{errors.storeName.message}</div>}
+            {errors.storeName && (
+              <div className="text-right text-red-600 truncate">{errors.storeName.message}</div>
+            )}
           </label>
         )}
 
@@ -134,7 +148,7 @@ function StoreAdmin() {
         </div>
       </form>
     </div>
-  );
+  )
 }
 
-export default StoreAdmin;
+export default StoreAdmin
