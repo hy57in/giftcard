@@ -1,0 +1,29 @@
+{
+  "name": "기프트카드 (Giftcard)",
+  "short_name": "기프트카드",
+  "theme_color": "#ff9a88",
+  "background_color": "#fcfcfc",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "giftcard-logo-white-144.webp",
+      "sizes": "144x144",
+      "type": "image/webp",
+      "purpose": "maskable"
+    },
+    {
+      "src": "giftcard-logo-white-192.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "maskable"
+    },
+    {
+      "src": "giftcard-logo-white-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

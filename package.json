@@ -25,6 +25,7 @@
     "crypto-js": "^4.1.1",
     "moment": "^2.29.1",
     "next": "latest",
+    "next-pwa": "^5.2.24",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-datepicker": "^4.1.1",
