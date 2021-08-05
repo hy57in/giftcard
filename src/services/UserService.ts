@@ -4,6 +4,8 @@ import { API_V1_URL } from '../utils/constants'
 import { gcs } from '../utils/types'
 import { jsonAuthHeaders, jsonHeader } from './headers'
 
+console.log(API_V1_URL)
+
 const loginUser = async ({ credentials }: { credentials: gcs.CredentialsInterface }) =>
   await axios
     .post(API_V1_URL + '/login', JSON.stringify(credentials), {
