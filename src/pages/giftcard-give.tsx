@@ -7,12 +7,13 @@ import { getGiftcard, updateGiftcard } from '../services/GiftcardService'
 import { findUserList, getUser } from '../services/UserService'
 import { gcs } from '../utils/types'
 import useTokens from '../utils/useTokens'
+import useQueryString from 'src/hooks/useQueryString'
 
 function GiftcardGive() {
   const { tokens } = useTokens()
   const router = useRouter()
   const [user, setUser] = useState<gcs.UserProfileInterface | null>(null)
-  const { giftcardId } = router.query
+  const giftcardId = useQueryString().substr(12)
   const [giftcard, setGiftcard] = useState<gcs.GiftcardResponseInterface | null>(null)
 
   const {
@@ -58,12 +59,14 @@ function GiftcardGive() {
   }
 
   useEffect(() => {
+    const giftcardId = window.location.search.substr(13)
+
     if (!giftcardId) {
       router.push('/not-found')
     }
 
     ;(async () => {
-      await getGiftcard({ tokens, giftcardId: giftcardId as string }).then(async (res) => {
+      await getGiftcard({ tokens, giftcardId: giftcardId }).then(async (res) => {
         setGiftcard(res)
       })
       ;(async () => {
@@ -71,7 +74,7 @@ function GiftcardGive() {
         setUser(user)
       })()
     })()
-  }, [tokens, giftcardId])
+  }, [tokens, giftcardId, router])
 
   return (
     <div className="max-w-screen-xl mx-auto w-full flex flex-col items-center p-4">
