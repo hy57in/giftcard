@@ -107,8 +107,8 @@ function GiftcardDetail() {
             <div className="w-full text-right">{giftcard?.store?.name}</div>
           </div>
           <div className="w-full h-px bg-gray-500 mb-2" />
-          <div className="flex flex-col w-full p-2 items-center border-2 border-gray-500 mb-2">
-            <div className="w-full text-center mb-4 font-bold text-2xl">QR 코드</div>
+          <div className="flex flex-col w-full p-2 items-center border-2 border-gray-500 mb-2 bg-black space-y-24 pb-24">
+            <div className="w-full text-center mb-4 font-bold text-2xl text-white">QR 코드</div>
             <div className="w-2/3 md:w-1/2 border-4 border-gray-500">
               <QrCode
                 /* Encrypt QR code data */
